@@ -169,3 +169,67 @@ https://www.tutorialspoint.com/assembly_programming/assembly_environment_setup.h
   * **SP**: Stack Pointer (provides offset value within program stack)
   * **BP**: Base Pointer (helps in referencing parameter variables passed to subrouting)
 
+
+
+### Control Register
+
+* 32-bit instruction pointer register and the 32-bit flags register
+* instructions involve comparisons and mathematical calculations and change the status of the flags and some other conditional instructions test
+
+
+
+### Segment Registers
+
+* specific areas defined in a program for containing data, code and stack
+
+* Code, Data and Stack Segment
+
+
+
+## System Calls
+
+* APIs for the interface between the user space and the kernel space
+* How to make system calls
+  * Put the system call number in the EAX register.
+  * Store the arguments to the system call in the registers EBX, ECX, etc.
+  * Call the relevant interrupt (80h).
+  * The result is usually returned in the EAX register.
+
+| %eax | Name      | %ebx           | %ecx         | %edx   | %esx | %ed  |
+| ---- | --------- | -------------- | ------------ | ------ | ---- | ---- |
+| 1    | sys_exit  | int            | -            | -      | -    | -    |
+| 2    | sys_fork  | struct pt_regs | -            | -      | -    | -    |
+| 3    | sys_read  | unsigned int   | char *       | size_t | -    | -    |
+| 4    | sys_write | unsigned int   | const char * | size_t | -    | -    |
+| 5    | sys_open  | const char *   | int          | int    | -    | -    |
+| 6    | sys_close | unsigned int   | -            | -      | -    | -    |
+
+
+
+## Addressing Modes
+
+Most assembly language instructions require operands to be processed. An operand address provides the location, where the data to be processed is stored.
+
+
+
+### Register Addressing
+
+* Register contains the operand
+* Depending upon the instruction, the register may be the first operand, the second operand or both
+* As processing data between registers does not involve memory, it provides fastest processing of data.
+
+
+
+### Immediate Addressing
+
+* Operand has constant value or an expression
+* When an instruction with two operands uses immediate addressing, the first operand may be a register or memory location, and the second operand is an immediate constant. The first operand defines the length of the data.
+
+
+
+### Direct Memory Addressing
+
+* When operands are specified in memory addressing mode, direct access to main memory, usually to the data segment, is required. This way of addressing results in slower processing of data. 
+
+
+
