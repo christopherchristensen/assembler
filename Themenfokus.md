@@ -1,8 +1,8 @@
 Themenfokus:
 
-- RISC vs. CISC
-	- TODO https://cs.stanford.edu/people/eroberts/courses/soco/projects/risc/risccisc/
-- Basic Instructions 
+- RISC vs. CISC ("done")
+	- https://cs.stanford.edu/people/eroberts/courses/soco/projects/risc/risccisc/
+- Basic Instructions  ("doing")
 	- -> `Counter.asm`
 - Zusammenspiel mit HW (Register, Speicheradressierung, usw.)
 	- TODO 

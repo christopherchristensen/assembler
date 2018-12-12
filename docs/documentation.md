@@ -12,6 +12,10 @@
 
 
 
+> It is important to understand that the phrase assembly language differs from phrases such as Java language or C language because assembly does not refer to a single language. Instead, a given assembly language uses the instruction set and operands from a single processor. Thus, many assembly languages exist, one for each processor.
+
+
+
 ## Vorteile von Assembly
 
 * verwendet weniger Memory und Ausführzeiten
@@ -230,6 +234,187 @@ Most assembly language instructions require operands to be processed. An operand
 ### Direct Memory Addressing
 
 * When operands are specified in memory addressing mode, direct access to main memory, usually to the data segment, is required. This way of addressing results in slower processing of data. 
+
+
+
+
+
+## Notes
+
+* Almost no abstraction over native instruction set of the processor
+* Gives you more control over processor (but more code to write)
+* Not very portable (different instruction sets)
+
+
+
+### Registers
+
+* Working memory (hold values during computation)
+* Different purpose registers in x86 architecture
+* 32-bit machines have 32-bit registers (in size)
+* 64-bit machines have 64-bit registers
+* 32-bit can run on 64-bit, because 64-bit registers can treat half as if it was 32-bit registers
+
+
+
+### Stack
+
+* LIFO data structure (implemented as contiguous array)
+  * push data on to stack to store
+  * pop data from stack to read
+  * accomplished by stack pointer
+* pointer holds location of top of stack
+  * when pushing a values the pointer is moved and value is written to new pointer location 
+  * when popping value reads from pointer location and moves the pointer backwards
+  * we have random access to all of this memory (aren't limited to just pushing and popping)
+  * stack pointer is also just a register that we can change and alter
+
+
+
+### NASM
+
+* why? $\to$ pretty widely supported
+* syntax can vary widely between different assemblers though $\to$ even with same architecture
+
+
+
+### Entry Point
+
+* This is where processor will start executing instruction from
+
+  ```assembly
+  global _start
+  _start:
+  ```
+
+* `global` keyword is used to make identifier accessible to linker
+
+* identifier followed by a colon will create a lable
+
+* lables are used to name locations in our code
+
+
+
+### Basic Instructions
+
+* `mov eax, 1` : 
+
+  * move instruction
+  * moving integer 1 into primary accumulator (general purpose register)
+  * eax determines system call (see system call table)
+
+* `mov ebx, 42` :
+
+  * moving integer 42 into base register
+
+* `int 0x80` : 
+
+  * Interrupt
+
+  * Processor will transfer a control to an interrupt handler specified by the following value (0x80 $\to$ interrupt handler for system calls)
+
+  * The system call that 0x80 makes is determined by the eax register
+
+    $\to$ value 1 means system exit call (end of program)
+
+  * ebx = status for program (could be any integer)
+
+* `sub ebx, 29` :
+
+  * subtraction
+  * subtracts 29 from whatever is stored in ebx 
+
+
+
+### Operations
+
+> Operations on left
+
+
+
+`operation [operand, …]`
+
+
+
+* `mov` : move
+* `sub` : subtraction
+* `add` : addition
+* `int` : interrupt
+
+```assembly
+mov ebx, 123  	; ebx  = 123
+add ebx, ecx  	; ebx += ecx
+```
+
+
+
+* `mul` : multiplication
+* `div` : division
+
+```assembly
+mul ebx			; eax *= ebx (implizit eax)
+div edx			; eax /= edx (implizit eax)
+```
+
+
+
+### Sections
+
+* `.data` : allow us to inline data to our programm that we can reference in the code by name
+
+```assembly
+global _start
+
+section .data
+msg db "Hello, world!", 0x0a 	; 0a is hex for 10 -> new line character
+len equ $ - msg					; determine length of string by 
+								; subtracting location of start and end 
+								; of the string
+```
+
+
+
+* `.text` : where our code should live
+
+```assembly
+global _start
+
+section .data
+    msg db "Hello World!", 0x0a
+    len equ $ - msg
+    
+section .text
+_start:
+    mov eax, 4    	; sys_write system call
+    mov ebx, 1    	; stdout file descriptor ?
+    mov ecx, msg  	; bytes to write (holds the string pointer)
+    mov edx, len  	; number of bytes to write
+    int 0x80      	; perform system call
+    
+    mov eax, 1		; sys_exit
+    mov ebx, 0		; exit status is 0
+    int 0x80		; perform system call (clears out everything?)
+```
+
+
+
+### Instruction Pointer
+
+
+
+```assembly
+global _start
+
+_start:
+    mov eax, 4
+    mov ebx, 1
+    add ecx, ebx
+    int 0x80
+    
+    mov eax, 1
+    mov ebx, 0
+    int 0x80
+```
 
 
 
