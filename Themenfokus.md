@@ -5,9 +5,9 @@ Themenfokus:
 - Basic Instructions  ("doing")
 	- -> `Counter.asm`
 - Zusammenspiel mit HW (Register, Speicheradressierung, usw.)
-	- TODO 
+	- -> `Counter.asm` 
 - Code-Beispiele für min. einen konkreten RISC-Prozessor
-	- TODO
+	- -> `fib_stack.asm`
 
 Aufgaben:
 
