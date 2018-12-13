@@ -418,3 +418,10 @@ _start:
 
 
 
+### Fazit
+
+- Melvin James
+
+* Codebeispiele in der Präsentation kürzen, denn vollständiger Code in Dokumentation (PUSH, POP)
+* Präsi: Basic Instructions Counter mit Stack
+* Präsi: Fibonacci
