@@ -151,10 +151,10 @@ div edx				; ebx *= edx (mul und div implizit Register ebx zugewiesen)
 
 ### Fazit Christopher Christensen
 
-Obwohl man  zu Beginn eine relativ grosse Hürde überwinden muss, empfinde ich Assembly als sehr lohnenswert zu lernen. Es verschafft einem ein besseres Verständnis wie Prozessoren im Allgemeinen aufgebaut sind, der Prozessor auf Instruktionen zugreift und diese ausführt, Daten in Registern zwischengespeichert und Daten im Memory repräsentiert und abgerufen werden. Es erlaubt einem auch sich besser vorzustellen, wie higher-level Programmiersprachen funktionieren und vorallem auch was der Sinn dahinter ist. Für jene, die sich eine neue Sprache aneignen wollen, kann ich Assembly nur anraten. Ich werde mich auf jeden Fall weiterhin damit beschäftigen.
+Obwohl man zu Beginn eine relativ grosse Hürde überwinden muss, empfinde ich Assembly als sehr lohnenswert zu lernen. Es verschafft einem ein besseres Verständnis wie Prozessoren im Allgemeinen aufgebaut sind, der Prozessor auf Instruktionen zugreift und diese ausführt, Daten in Registern zwischengespeichert und Daten im Memory repräsentiert und abgerufen werden. Es erlaubt einem auch sich besser vorzustellen, wie higher-level Programmiersprachen funktionieren und vorallem auch was der Sinn dahinter ist. Für jene, die sich eine neue Sprache aneignen wollen, kann ich Assembly nur anraten. Ich werde mich auf jeden Fall weiterhin damit beschäftigen.
 
 
 
 ### Fazit Melvin Werthmüller
 
-**TODO** Melvin
+Ich finde Assembler eine Sprache, welche man in seiner Karriere als Software-Entwickler, angeschaut haben muss. Es gibt ein gutes Verständniss über die Funktionsweise eines Prozessors und zwingt so die Denkweise an zu passen. Mit Hilfe der Maschinennahen Instruktionen, kann ein hoch effizientes Programm erstellt werden. Dies ist aber vorallem für komplexere Vorgehen eine sehr anspruchsvolle Angelegenheit. Assembler werde ich nur in erwägung ziehen, wenn dies unbedingt notwendig ist. Ansonsten bevorzuge ich Programmiersprachen, auf einem höheren Abstraktionslevel.
