@@ -140,9 +140,226 @@ div edx				; ebx *= edx (mul und div implizit Register ebx zugewiesen)
 
 
 ## Codebeispiele
+Folgende Codebeispiele können mit dem online NASM compiliert und ausgeführt werden: [https://www.tutorialspoint.com/compile_asm_online.php](https://www.tutorialspoint.com/compile_asm_online.php)
 
-**TODO** Melvin?
+### Counter über einen Stack
+```assembly
+SYS_EXIT  equ 1
+SYS_WRITE equ 4
+STDOUT    equ 1
 
+section	.text
+   global _start    ;must be declared for using gcc
+	
+_start:
+
+   mov	eax, '0' ; init number
+   sub  eax, '0' ; subtracting ascii '0' to convert it into a decimal number
+
+l1:
+   INC  eax
+   mov 	[sum], eax
+   PUSH sum
+   
+   CMP eax,	'6'
+   JLE  l1 ; eax <= 6
+   
+
+print:
+   POP  ecx
+   mov	edx, 1  ;lenght of output
+   mov	ebx, STDOUT	;file descriptor (stdout)
+   mov	eax, SYS_WRITE	;system call number (sys_write)
+   int	0x80	;call kernel
+   
+
+_exit:    
+   mov	eax, SYS_EXIT	;system call number (sys_exit)
+   int	0x80	;call kernel
+	
+segment .bss ;memory
+   sum resb 1
+```
+
+### Summe zweier Zahlen
+```assembly
+SYS_EXIT  equ 1
+SYS_WRITE equ 4
+STDOUT    equ 1
+
+section	.text
+   global _start    ;must be declared for using gcc
+	
+_start:             ;tell linker entry point
+
+   ; moving the first number to eax register and second number to ebx
+   ; and subtracting ascii '0' to convert it into a decimal number
+   mov	eax, '3'
+   sub  eax, '0'
+	
+   mov 	ebx, '4'
+   sub  ebx, '0'
+   
+   
+   ; add eax and ebx
+   ; add '0' to to convert the sum from decimal to ASCII
+   add 	eax, ebx
+   add	eax, '0'
+	
+   ; storing the sum in memory location sum
+   mov 	[sum], eax
+	
+   mov	ecx, sum
+   mov	edx, 1  ;lenght of output
+   mov	ebx, STDOUT	;file descriptor (stdout)
+   mov	eax, SYS_WRITE	;system call number (sys_write)
+   int	0x80	;call kernel
+
+_exit:    
+   mov	eax, SYS_EXIT	;system call number (sys_exit)
+   int	0x80	;call kernel
+	
+segment .bss ;memory
+   sum resb 1
+```
+
+### Begrenzte Fibbonaciberechnung mit einem Array
+```assembly
+section	.text
+   global _start   ;must be declared for linker (ld)
+	
+_start:	
+ 		
+   mov  eax, 0      ;counter;number bytes to be summed 
+   mov  ebx, 0      ;EBX will store the sum
+   mov  ecx, x      ;ECX will point to the current element to be summed
+
+   ; INPUT *******
+   add  ecx, 2      ; ENTER: Fib Zahl n
+   ; *************
+   
+   CMP  ecx, 3      
+   JGE  normal      ; handle normal case
+   
+   mov ebx, 1       ; handle base case f1, f2
+   JMP done
+      
+   
+normal:
+   sub  ecx, 3   
+   
+top:  
+
+   add  ebx, [ecx] ; add value of element to sum
+   add  ecx,1      ; move pointer to next element
+   
+   INC  eax        ;decrement counter
+   CMP  eax, 2
+   JE   done       ;if counter not 2, then loop again
+  
+   JMP top
+
+done: 
+
+   add  ebx, '0'   ; number -> ascii
+   mov  [sum], ebx ;done, store result in "sum"
+
+display:
+
+   mov  edx, 1      ;message length
+   mov  ecx, sum   ;message to write
+   mov  ebx, 1     ;file descriptor (stdout)
+   mov  eax, 4     ;system call number (sys_write)
+   int  0x80       ;call kernel
+
+exit:
+   mov  eax, 1     ;system call number (sys_exit)
+   int  0x80       ;call kernel
+
+section	.data
+global x
+x:    
+   db  1    ;f1
+   db  1    ;f2
+   db  2    ;f3
+   db  3    ;f4
+   db  5    ;f5
+   db  8    ;f6
+   db  17   ;f7
+
+sum: 
+   db  0
+```
+
+### Fibbonaciberechnung über den Stack
+```assembly
+section	.text
+   global _start   ;must be declared for linker (ld)
+	
+_start:	
+ 		
+   mov  eax, 8      ; fn INPUT
+   
+   mov  ebx, 0      ;EBX will store the sum
+   mov  ecx, 0      ;ECX will be temp dir
+
+   PUSH 1           ; base case f2 = 1
+   PUSH 1           ; base case f1 = 1
+ 
+   CMP eax, 2
+   JG norm
+   
+   MOV ebx, 1
+   JMP done
+   
+norm:  
+   SUB eax, 2
+   
+top:  
+   POP ecx
+   MOV [fn_1], ecx
+   POP ecx
+   MOV [fn_2], ecx
+   
+   MOV ebx, 0   ; calc
+   ADD ebx, [fn_2]
+   ADD ebx, [fn_1]
+   
+   
+   MOV ecx, 0
+   ADD ecx, [fn_1]
+   PUSH ecx    ;preview fn-1 is new fn-2
+   PUSH ebx      ;calculated fn is new fn-1
+   
+   DEC eax
+   JNZ top
+  
+done: 
+
+   add  ebx, '0'   ; number -> ascii
+   mov  [sum], ebx ;done, store result in "sum"
+
+display:
+
+   mov  edx, 1      ;message length
+   mov  ecx, sum   ;message to write
+   mov  ebx, 1     ;file descriptor (stdout)
+   mov  eax, 4     ;system call number (sys_write)
+   int  0x80       ;call kernel
+
+exit:
+   mov  eax, 1     ;system call number (sys_exit)
+   int  0x80       ;call kernel
+
+section	.data
+fn_1:    
+   db  1    ;fn-1
+fn_2:
+   db  1    ;fn-2
+
+sum: 
+   db  0
+```
 
 
 ## Schlussgedanken
