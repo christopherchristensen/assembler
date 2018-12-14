@@ -155,7 +155,7 @@ JE  L7      ; Falls zutrifft, springe zu L7
 L7: ...  
 ```
 
-Für eine vollständige Liste der Jump Instruktionen folgen Sie diesem Link: https://www.tutorialspoint.com/assembly_programming/assembly_conditions.htm.
+Für eine vollständige Liste der Jump Instruktionen folgen Sie diesem Link: [https://www.tutorialspoint.com/assembly_programming/assembly_conditions.htm.](https://www.tutorialspoint.com/assembly_programming/assembly_conditions.htm.)
 
 
 
