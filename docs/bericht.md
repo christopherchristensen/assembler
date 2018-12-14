@@ -2,13 +2,11 @@
 
 > Christopher Christensen, Melvin Werthmüller
 
-In diesem Bericht wird die low-level Programmiersprache Assembly genauer betrachtet. Da die Implementation von Assembly auf den Prozessortyp (sprich Instruction Set) abhangt und nicht wie andere Sprachen eine einzige Form einer Sprache repräsentiert, beschränken wir uns auf Intel-32 Prozessoren wie Pentium. Als Assembler verwenden wir NASM, weil dieser gratis, stark verbreitet und dadurch gut dokumentiert ist. 
+In diesem Bericht wird die low-level Programmiersprache Assembly genauer betrachtet. Da die Implementation von Assembly auf den Prozessortyp (sprich Instruction Set) abhangt und nicht wie andere Sprachen eine einzige Form einer Sprache repräsentiert, beschränken wir uns auf Intel-32 Prozessoren (IA-32 Architektur) wie Pentium. Als Assembler verwenden wir NASM, weil dieser gratis, stark verbreitet und dadurch gut dokumentiert ist. 
 
 
 
 ## NASM installieren
-
-
 
 ### Requirements
 
@@ -31,9 +29,15 @@ Um NASM zu installieren brauchen sie
 
 
 
+### Ohne Installation
+
+Falls die Installation fehlschlägt oder keine Installation möglich ist kann man den Assembler-Code im online NASM verwenden: [https://www.tutorialspoint.com/compile_asm_online.php](https://www.tutorialspoint.com/compile_asm_online.php)
+
+
+
 ## Was ist Assembly?
 
-Assembly ist wie bereits erwähnt eine low-level Programmiersprache. Diese dient als eine Abstraktion von Maschinencode für das bessere Verständnis. Wie bereits erwähnt hat Assembly verschiedene Implementationen, die jeweils von der bestimment Computer-Architektur, sprich ihrer Prozessor-Architektur, abhangt. Assembly wird in schlussendlich ausführbaren Maschinencode konvertiert durch Dienstprogramm (Assembler), wie NASM oder MASM (für Microsoft).
+Assembly ist wie bereits erwähnt eine low-level Programmiersprache. Diese dient als eine Abstraktion von Maschinencode für das bessere Verständnis. Wie bereits erwähnt hat Assembly verschiedene Implementationen, die jeweils von der bestimment Computer-Architektur, sprich ihrer Prozessor-Architektur, abhangt. Assembly wird in schlussendlich ausführbaren Maschinencode konvertiert durch Dienstprogramm (Assembler), wie NASM oder MASM (für Microsoft). Dieser Begriff wird weiterhin auf die Programmiersprach Assembly referenzieren, wobei die Assembly Implementation für NASM gemeint ist.
 
 
 
@@ -51,19 +55,13 @@ Assembly ist eine sehr hardwarenahe Programmiersprache, weshalb sie weniger Memo
 
 ### Nachteile
 
-Als Programmiersprache hat Assembly eigentlich nur eine aber sehr relevante Schwäche. Assembly ist sehr aufwändig und kompliziert, wenn es darum geht grosse und komplexe Software zu entwickeln.
+Als Programmiersprache hat Assembly eigentlich nur eine, aber sehr relevante, Schwäche. Assembly ist sehr aufwändig und kompliziert, wenn es darum geht grosse und komplexe Software zu entwickeln.
 
 
 
 ## RISC / CISC
 
-Bei RISC und CISC handelt es sich um zwei fundamentell verschiedene Prozessor-Architekturen. CISC, kurz für Complex Instruction Set Computer, kann eine Serie von Instruktionen und somit ein Programm in so wenig Zeilen wie möglich lesen und abarbeiten. RISC, kurz für Reduced Instruction Set Computer, arbeitet simple Instruktionen in einem einzigen Clock-Cycle ab. Grundsätzlich ist RISC weniger performativ, da es am Ende mehr Zeilen von Code braucht und mehr RAM benötigt, um ein gleiches Program in CISC auszuführen.  Trotzdem hat RISC Vorteile. 
-
-**TODO** James ;)
-
- *Because each instruction requires only one clock cycle to execute, the entire program will execute in approximately the same amount of time as the multi-cycle "MULT" command. These RISC "reduced instructions" require less transistors of hardware space than the complex instructions, leaving more room for general purpose registers. Because all of the instructions execute in a uniform amount of time (i.e. one clock), pipelining is possible.*
-
-
+Bei RISC und CISC handelt es sich um zwei fundamentell verschiedene Prozessor-Architekturen. CISC, kurz für Complex Instruction Set Computer, kann eine Serie von Instruktionen und somit ein Programm in so wenig Zeilen wie möglich lesen und abarbeiten. RISC, kurz für Reduced Instruction Set Computer, arbeitet simple Instruktionen in einem einzigen Clock-Cycle ab. Grundsätzlich ist RISC weniger performativ, da es am Ende mehr Zeilen von Code braucht und mehr RAM benötigt, um ein gleiches Program in CISC auszuführen. Trotzdem hat RISC Vorteile. Da jede Instruktion nur einen Clock-Cycle braucht, kann ein ganzes Program in derselben Zeit ausgeführt werden, wie ein einziger Multi-Cycle-Befehl (z.B. `mul`). Die Instruktionen verwenden eine kleiner Anzahl Transistoren des Hardware-Platzes wie die komplexen Instruktionen. Dabei bleibt mehr Platz für die **general purpose**-Register. Auch Pipelining ist möglich, da die Instruktionen in einer uniformen Zeit ausgeführt werden.
 
 In der folgenden Tabelle sieht man einen generellen Vergleich der beiden Architekturen.
 
@@ -95,6 +93,8 @@ In folgender Tabelle sind einige wichtige Operationen aufgelistet.
 | `sub`     | Subtraktion                              |
 | `mul`     | Multiplikation                           |
 | `div`     | Division                                 |
+| `inc`     | Increment                                |
+| `dec`     | Decrement                                |
 | `push`    | Wert auf Stack pushen                    |
 | `pop`     | Wert von Stack entfernen                 |
 | `int`     | Interrupt                                |
@@ -108,11 +108,29 @@ mul 5				; ebx *= 5
 div edx				; ebx *= edx (mul und div implizit Register ebx zugewiesen)
 ```
 
+Assembly stellt die Instruktionen `DB`, `DW `, `DD`, `DQ`, `DT`, bereit, um Speicher für initialisierte Variablen zu reservieren. Auch für nicht initialisierte Variablen kann Speicher reserviert werden, wie auch für Konstanten ([assembly_variables](https://www.tutorialspoint.com/assembly_programming/assembly_variables.htm), [assembly_constants](https://www.tutorialspoint.com/assembly_programming/assembly_constants.htm)).
+
 
 
 ### System Calls
 
-**TODO** James
+System Calls sind Methoden, um vom Betriebssystem bestimmte Funktionalitäten aufzurufen (z.B. Lesen oder Schreiben von Daten). Die Kontrolle wird während der Ausführung dem Kernel übergeben. In Assembly wird der System Call immer zu Beginn definiert indem sie in das *eax*-Register bewegt wird (siehe folgendes Beispiel).
+
+```assembly
+mov eax, 0		; Der System Call sys_exit wird ins Register eax bewegt
+```
+
+Danach wird der System Call mit dem Interrupt `int 0x80` aufgerufen. Der generelle Ablauf eines System Calls ist:
+
+
+
+* **System Call** in Register *eax* speichern
+* **Argumente** zum System Call in die Register *ebx, ecx, edx* speichern
+* **Interrupt** mit 0x80 ausführen (0x80 = Interrupt Handler für System Calls)
+
+
+
+In der folgenden Tabelle sind alle System Calls aufgelistet.
 
 | eax  | System Call |
 | ---- | ----------- |
@@ -125,21 +143,86 @@ div edx				; ebx *= edx (mul und div implizit Register ebx zugewiesen)
 
 
 
+### Conditions (Jumps)
+
+Alle (oder die meisten) Programmiersprachen benötigen einen Weg, um die Reihenfolge in der Instruktionen ausgeführt werden zu ändern. In Assembly beinhaltet der EIP (Extended Instruction Pointer) die nächste Instruktion, die auszuführen ist. Mit Jumps kann man diese Reihenfolge in Assembly ändern. Assembly unterscheidet zwischen **Unconditional Jumps** (Änderung der Reihenfolge ohne Bedingung) und **Conditional Jumps** (Bedingung muss zutreffen für Änderung der Reihenfolge). Unconditional Jumps werden mit `JMP` ausgeführt. Bei Conditional Jumps muss zuerst die Bedingung überprüft werden mit `CMP`, wobei zwei Daten miteinander verglichen werden. Danach wird ein Conditional Jump (z.B. `JE`) mit der 	nächsten Instruktion zu der "gesprungen" werden soll.
+
+```assembly
+CMP DX,	00  ; Wert von DX wird mit 0 verglichen
+JE  L7      ; Falls zutrifft, springe zu L7
+.
+.
+L7: ...  
+```
+
+Für eine vollständige Liste der Jump Instruktionen folgen Sie diesem Link: https://www.tutorialspoint.com/assembly_programming/assembly_conditions.htm.
+
+
+
 ## Zusammenspiel mit HW
 
 ### Register
 
-**TODO** James
+Prozessoren verfügen über eingebaute Register, die Daten während Instruktionen ausgeführt werden zwischenspeichern. Dies steigert die Effizienz eines Programms, da die Daten nicht immer ins Memory geschrieben und ausgelesen werden müssen. Die Register können in folgende Kategorien eingeordnet werden:
+
+- Allgemeine Register (mit Datenregister, Pointerregister und Indexregistern)
+- Kontrollregister
+- Segmentregisters
+
+In diesem Bericht liegt der Fokus auf die zu Beginn erwähnte Prozessorarchitektur Intel-32. In der nachfolgenden Tabelle werden die Register kurz erläutert.
+
+| Register         | Definition                                                   |
+| ---------------- | ------------------------------------------------------------ |
+| Datenregister    | 32-bit Register für arithmetische, logische und andere Operationen |
+| Pointerregister  | 32-bit Extenden Instruction Pointer, Extended Stack Pointer und Extended Base Pointer |
+| Indexregister    | 32-bit Register für indexierte Addressierung                 |
+| Kontrollregister | 32-bit Instruction Pointer und 32-bit Flag Register kombiniert. Unteranderem verwendet für Datenvergleiche, mathematische Berechnungen, Statusänderungen der Flags und anderen an Bedingungen gebundende Instruktionen. |
+| Segmentregister  | Bestimmte Bereiche die im Code definiert sind und Daten, Code und Stack beinhalten (z.B. `section .data`). |
 
 
 
-### Memory Addressing
+### Adressierungsarten
 
-**TODO** James
+Addressen sind Referenzen auf Daten, die der Prozessor während dem Ausführen eines Programs benötigt. Dabei gibt es drei Formen der Addressierung:
+
+* Register Addressing
+* Immediate Addressing
+* Memory Addressing
+
+
+
+#### Register Addressing
+
+Bei Register Addressing beinhalten die Register die Operanden. Diese ist die schnellste Form von Addressierung, da die Register direkt addressiert werden und somit nichts aus dem Speicher oder in den Speicher bewegt werden muss.
+
+```assembly
+mov eax, ebx			; Wert von ebx ins Register eax bewegen
+```
+
+
+
+#### Immediate Addressing
+
+Hier werden meistens Konstanten referenziert. Die Operanden können in einem Register oder im Speicher liegen.
+
+```assembly
+mov AX, LEN				; die Konstante LEN wird ins Register AX bewegt
+```
+
+
+
+#### Memory Addressing
+
+Bei dieser Art von Addressierung wird direkter Zugriff auf den Memory benötigt. Aus diesem Grund ist sie auch langsamer. Um Daten an ihrem direkten Speicherort zu orten braucht es die Startadresse (meistens im DS-Register) und einen Offset-Wert (Effictive Address). 
+
+```assembly
+mov	BX, WORD_VALUE
+```
 
 
 
 ## Codebeispiele
+
 Folgende Codebeispiele können mit dem online NASM compiliert und ausgeführt werden: [https://www.tutorialspoint.com/compile_asm_online.php](https://www.tutorialspoint.com/compile_asm_online.php)
 
 ### Counter über einen Stack
@@ -374,4 +457,4 @@ Obwohl man zu Beginn eine relativ grosse Hürde überwinden muss, empfinde ich A
 
 ### Fazit Melvin Werthmüller
 
-Ich finde Assembler eine Sprache, welche man in seiner Karriere als Software-Entwickler, angeschaut haben muss. Es gibt ein gutes Verständniss über die Funktionsweise eines Prozessors und zwingt so die Denkweise an zu passen. Mit Hilfe der Maschinennahen Instruktionen, kann ein hoch effizientes Programm erstellt werden. Dies ist aber vorallem für komplexere Vorgehen eine sehr anspruchsvolle Angelegenheit. Assembler werde ich nur in erwägung ziehen, wenn dies unbedingt notwendig ist. Ansonsten bevorzuge ich Programmiersprachen, auf einem höheren Abstraktionslevel.
+Ich finde Assembler eine Sprache, welche man in seiner Karriere als Software-Entwickler, angeschaut haben muss. Es gibt ein gutes Verständniss über die Funktionsweise eines Prozessors und zwingt so die Denkweise anzupassen. Mit Hilfe der maschinennahen Instruktionen, kann ein hoch effizientes Programm erstellt werden. Dies ist aber vorallem für komplexere Vorgehen eine sehr anspruchsvolle Angelegenheit. Assembler werde ich nur in Erwägung ziehen, wenn dies unbedingt notwendig ist. Ansonsten bevorzuge ich Programmiersprachen, auf einem höheren Abstraktionslevel.
