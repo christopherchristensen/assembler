@@ -193,10 +193,11 @@ Addressen sind Referenzen auf Daten, die der Prozessor während dem Ausführen e
 
 #### Register Addressing
 
-Bei Register Addressing beinhalten die Register die Operanden. Diese ist die schnellste Form von Addressierung, da die Register direkt addressiert werden und somit nichts aus dem Speicher oder in den Speicher bewegt werden muss.
+Bei Register Addressing beinhalten die Register der Operanden. Diese ist die schnellste Form von Addressierung, da die Register direkt addressiert werden und somit nichts aus dem Speicher oder in den Speicher bewegt werden muss.
 
 ```assembly
-mov eax, ebx			; Wert von ebx ins Register eax bewegen
+mov eax, ebx		
+; Wert von ebx ins Register eax bewegen
 ```
 
 
@@ -206,7 +207,8 @@ mov eax, ebx			; Wert von ebx ins Register eax bewegen
 Hier werden meistens Konstanten referenziert. Die Operanden können in einem Register oder im Speicher liegen.
 
 ```assembly
-mov AX, LEN				; die Konstante LEN wird ins Register AX bewegt
+mov AX, LEN				
+; die Konstante LEN wird ins Register AX bewegt
 ```
 
 
